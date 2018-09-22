@@ -8,11 +8,19 @@ CLUSTER_NAME=cluster-1
 CLOUDSDK_COMPUTE_ZONE=us-central1-c
 CLOUD_SDK_DOWNLOAD_LINK=https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-180.0.1-linux-x86_64.tar.gz
 
+function create_conda_environment {
+    conda env create -f $1
+}
+
+function activate_conda_environment {
+    echo "conda activate $1" >> $BASH_ENV
+}
+
 function install_gcloud {
-    cd /root
+    cd ~
     curl -L $CLOUD_SDK_DOWNLOAD_LINK | tar xz
     CLOUDSDK_CORE_DISABLE_PROMPTS=1 ./google-cloud-sdk/install.sh
-    echo 'export PATH=/root/google-cloud-sdk/bin/:$PATH' >> $BASH_ENV
+    echo 'export PATH=$HOME/google-cloud-sdk/bin:$PATH' >> $BASH_ENV
 }
 
 function configure_gcloud {
