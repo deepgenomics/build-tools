@@ -25,6 +25,10 @@ function install_miniconda {
     echo ". $HOME/miniconda/etc/profile.d/conda.sh" >> $BASH_ENV
 }
 
+function create_conda_environment {
+    conda env create -f $1
+}
+
 function activate_conda_environment {
     echo "conda activate $1" >> $BASH_ENV
 }
