@@ -8,8 +8,21 @@ CLUSTER_NAME=cluster-1
 CLOUDSDK_COMPUTE_ZONE=us-central1-c
 CLOUD_SDK_DOWNLOAD_LINK=https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-180.0.1-linux-x86_64.tar.gz
 
-function create_conda_environment {
-    conda env create -f $1
+function download_miniconda {
+    if [ `uname` = "Darwin" ]; then
+	URL=https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh
+    else
+	URL=https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh
+    fi
+    curl $URL -o /tmp/miniconda.sh
+}
+
+function install_miniconda {
+    # install miniconda
+    bash /tmp/miniconda.sh -b -f -p $HOME/miniconda
+
+    # source the script that makes the "conda" tool available
+    echo ". $HOME/miniconda/etc/profile.d/conda.sh" >> $BASH_ENV
 }
 
 function activate_conda_environment {
