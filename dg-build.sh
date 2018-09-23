@@ -8,6 +8,21 @@ CLUSTER_NAME=cluster-1
 CLOUDSDK_COMPUTE_ZONE=us-central1-c
 CLOUD_SDK_DOWNLOAD_LINK=https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-180.0.1-linux-x86_64.tar.gz
 
+function add_env_command {
+    echo "$1" >> $BASH_ENV
+}
+
+function add_env_path {
+    component="$1"
+    echo "export PATH=${component}:\$PATH" >> $BASH_ENV
+}
+
+function add_env_var {
+    var=$1
+    value=$2
+    echo "export ${var}=${value}" >> $BASH_ENV
+}
+
 function download_miniconda {
     if [ `uname` = "Darwin" ]; then
 	URL=https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh
@@ -22,7 +37,7 @@ function install_miniconda {
     bash /tmp/miniconda.sh -b -f -p $HOME/miniconda
 
     # source the script that makes the "conda" tool available
-    echo ". $HOME/miniconda/etc/profile.d/conda.sh" >> $BASH_ENV
+    add_env_command "$HOME/miniconda/etc/profile.d/conda.sh"
 }
 
 function create_conda_environment {
@@ -30,7 +45,7 @@ function create_conda_environment {
 }
 
 function activate_conda_environment {
-    echo "conda activate $1" >> $BASH_ENV
+    add_env_command "conda activate $1"
 }
 
 function install_golang {
@@ -42,14 +57,14 @@ function install_golang {
     fi
     curl -L $URL | (cd $HOME; tar zxf -)
 
-    echo "export PATH=$HOME/go/bin:$PATH" >> $BASH_ENV
+    add_env_path "$HOME/go/bin"
 }
 
 function install_gcloud {
     cd ~
     curl -L $CLOUD_SDK_DOWNLOAD_LINK | tar xz
     CLOUDSDK_CORE_DISABLE_PROMPTS=1 ./google-cloud-sdk/install.sh
-    echo 'export PATH=$HOME/google-cloud-sdk/bin:$PATH' >> $BASH_ENV
+    add_env_path "$HOME/google-cloud-sdk/bin"
 }
 
 function configure_gcloud {
@@ -64,11 +79,11 @@ function configure_gcloud {
 }
 
 function install_docker_client {
-    cd /root
+    cd $HOME
     VER="17.03.0-ce"
     curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
-    tar -xz -f /tmp/docker-$VER.tgz
-    echo 'export PATH=/root/docker:$PATH' >> $BASH_ENV
+    tar zxf /tmp/docker-$VER.tgz
+    add_env_path "$HOME/docker"
 }
 
 function build_image {
