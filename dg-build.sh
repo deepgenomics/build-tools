@@ -33,6 +33,18 @@ function activate_conda_environment {
     echo "conda activate $1" >> $BASH_ENV
 }
 
+function install_golang {
+    if [ `uname` = "Darwin" ]; then
+	echo "Install golang not supported on Mac OS"
+	exit 1
+    else
+	URL=https://dl.google.com/go/go1.11.linux-amd64.tar.gz
+    fi
+    curl -L $URL | (cd $HOME; tar zxf -)
+
+    echo "export PATH=$HOME/go/bin:$PATH" >> $BASH_ENV
+}
+
 function install_gcloud {
     cd ~
     curl -L $CLOUD_SDK_DOWNLOAD_LINK | tar xz
