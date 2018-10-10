@@ -50,10 +50,9 @@ function activate_conda_environment {
 
 function install_golang {
     if [ `uname` = "Darwin" ]; then
-	echo "Install golang not supported on Mac OS"
-	exit 1
+	URL=https://dl.google.com/go/go1.11.1.darwin-amd64.tar.gz
     else
-	URL=https://dl.google.com/go/go1.11.linux-amd64.tar.gz
+	URL=https://dl.google.com/go/go1.11.1.linux-amd64.tar.gz
     fi
     curl -L $URL | (cd $HOME; tar zxf -)
 
