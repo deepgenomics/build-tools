@@ -97,8 +97,23 @@ function push_image {
 
 function redeploy_k8s {
     NAMESPACE=$1
-    
+
     kubectl -n $NAMESPACE patch deployment/server -p '{"spec":{"template":{"spec":{"containers":[{"name":"server","image":"gcr.io/dg-platform/shiny-apps:'"$CIRCLE_TAG"'"}]}}}}'
+}
+
+function circleci_upload_anaconda {
+    export VERSION_MATCH_PATTERN="v([^,\)]+)|([0-9]+(\.[0-9]+)*))"
+    export PACKAGE_FILENAME=`conda build --output $1`
+    if [ "${CIRCLE_BRANCH}" == "master" ] || [[ "${CIRCLE_TAG:-}" =~ $VERSION_MATCH_PATTERN ]]; then
+        if [[ "${CIRCLE_TAG:-}" =~ $VERSION_MATCH_PATTERN ]]; then
+            # Upload with "main" label
+            anaconda --token ${ANACONDA_TOKEN} upload --force --user deepgenomics --private ${PACKAGE_FILENAME}
+        else
+            # Upload with "dev" label
+            anaconda --token ${ANACONDA_TOKEN} upload --force --user deepgenomics --private ${PACKAGE_FILENAME} --label dev
+        fi
+    fi
+
 }
 
 # run the given function with args
