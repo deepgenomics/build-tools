@@ -102,10 +102,12 @@ function redeploy_k8s {
 }
 
 function circleci_upload_anaconda {
+    RECIPE_PATH=$1
+    VERSION=$2
     export VERSION_MATCH_PATTERN="v([^,\)]+)|([0-9]+(\.[0-9]+)*))"
-    export PACKAGE_FILENAME=`conda build --output $1`
-    if [ "${CIRCLE_BRANCH}" == "master" ] || [[ "${CIRCLE_TAG:-}" =~ $VERSION_MATCH_PATTERN ]]; then
-        if [[ "${CIRCLE_TAG:-}" =~ $VERSION_MATCH_PATTERN ]]; then
+    export PACKAGE_FILENAME=`conda build --output ${RECIPE_PATH}`
+    if [ "${CIRCLE_BRANCH}" == "master" ] || [[ "${VERSION}" =~ $VERSION_MATCH_PATTERN ]]; then
+        if [[ "${VERSION}" =~ $VERSION_MATCH_PATTERN ]]; then
             # Upload with "main" label
             anaconda --token ${ANACONDA_TOKEN} upload --force --user deepgenomics --private ${PACKAGE_FILENAME}
         else
