@@ -86,21 +86,6 @@ function install_docker_client {
     add_env_path "$HOME/docker"
 }
 
-function build_image {
-    gcloud docker -- build -t shiny-apps:$CIRCLE_SHA1 .
-}
-
-function push_image {
-    docker tag shiny-apps:$CIRCLE_SHA1 gcr.io/dg-platform/shiny-apps:$CIRCLE_TAG
-    gcloud docker -- push gcr.io/dg-platform/shiny-apps:$CIRCLE_TAG
-}
-
-function redeploy_k8s {
-    NAMESPACE=$1
-
-    kubectl -n $NAMESPACE patch deployment/server -p '{"spec":{"template":{"spec":{"containers":[{"name":"server","image":"gcr.io/dg-platform/shiny-apps:'"$CIRCLE_TAG"'"}]}}}}'
-}
-
 function circleci_upload_anaconda {
     RECIPE_PATH=$1
     VERSION=$2
