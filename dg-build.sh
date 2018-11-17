@@ -48,6 +48,33 @@ function activate_conda_environment {
     add_env_command "conda activate $1"
 }
 
+function configure_conda {
+    conda config --set always_yes yes --set changeps1 no
+    conda config --append channels conda-forge
+    conda config --append channels bioconda
+    conda config --append channels deepgenomics
+
+    # configure authentication
+    token_dir=$HOME/.continuum/anaconda-client/tokens
+    mkdir -p $token_dir
+    echo -n $ANACONDA_TOKEN > $token_dir/https%3A%2F%2Fapi.anaconda.org.token
+    chmod 0600 $token_dir/https%3A%2F%2Fapi.anaconda.org.token
+    token_dir=$HOME/.config/binstar
+    mkdir -p $token_dir
+    echo -n $ANACONDA_TOKEN > $token_dir/https%3A%2F%2Fapi.anaconda.org.token
+    chmod 0600 $token_dir/https%3A%2F%2Fapi.anaconda.org.token
+
+    if [ `uname` = "Darwin" ]; then
+	token_dir="$HOME/Library/Application Support/binstar"
+	mkdir -p "$token_dir"
+	echo -n $ANACONDA_TOKEN > "$token_dir/https%3A%2F%2Fapi.anaconda.org.token"
+	chmod 0600 "$token_dir/https%3A%2F%2Fapi.anaconda.org.token"
+    fi
+    
+    # print some conda info (helpful for debugging)
+    conda info -a
+}
+
 function install_golang {
     if [ `uname` = "Darwin" ]; then
 	URL=https://dl.google.com/go/go1.11.1.darwin-amd64.tar.gz
