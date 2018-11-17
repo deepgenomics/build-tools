@@ -9,7 +9,7 @@ CLOUDSDK_COMPUTE_ZONE=us-central1-c
 CLOUD_SDK_DOWNLOAD_LINK=https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-180.0.1-linux-x86_64.tar.gz
 
 function add_env_command {
-    echo "$1" >> $BASH_ENV
+    echo "$*" >> $BASH_ENV
 }
 
 function add_env_path {
