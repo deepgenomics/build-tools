@@ -130,18 +130,36 @@ function circleci_upload_anaconda {
 
 }
 
+function is_master_branch {
+    if [ "${CIRCLE_BRANCH:-}" = "master" ]; then
+	return 0
+    else
+	return 1
+    fi
+}
+
+function is_version_tag {
+    version_pattern="^v[0-9]+\.[0-9]+\.[0-9]+$"
+    if [ ! -z "${CIRCLE_TAG:-}" ]; then
+	if [[ "${CIRCLE_TAG}" =~ $version_pattern ]]; then
+	    return 0
+	else
+	    return 1
+	fi
+    else
+	return 1
+    fi
+}
+
 function upload_conda_package {
     RECIPE_PATH=$1
-    export VERSION_MATCH_PATTERN="v([^,\)]+)|([0-9]+(\.[0-9]+)*))"
     export PACKAGE_FILENAME=`conda build --output ${RECIPE_PATH}`
-    if [ "${CIRCLE_BRANCH}" == "master" ] || [[ "${CIRCLE_TAG}" =~ $VERSION_MATCH_PATTERN ]]; then
-        if [[ "${CIRCLE_TAG}" =~ $VERSION_MATCH_PATTERN ]]; then
-            # Upload with "main" label
-            anaconda --token ${ANACONDA_TOKEN} upload --force --user deepgenomics --private ${PACKAGE_FILENAME}
-        else
-            # Upload with "dev" label
-            anaconda --token ${ANACONDA_TOKEN} upload --force --user deepgenomics --private ${PACKAGE_FILENAME} --label dev
-        fi
+    if is_version_tag; then
+        # Upload with "main" label
+        anaconda --token ${ANACONDA_TOKEN} upload --force --user deepgenomics --private ${PACKAGE_FILENAME}
+    elif is_master_branch; then
+        # Upload with "dev" label
+        anaconda --token ${ANACONDA_TOKEN} upload --force --user deepgenomics --private ${PACKAGE_FILENAME} --label dev
     fi
 }
 
