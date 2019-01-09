@@ -190,6 +190,10 @@ function deploy_sphinx_docs {
         fi
         cd $BUILD_PATH
         mv html $version
+
+	# See: https://github.com/travis-ci/travis-ci/issues/7940
+	export BOTO_CONFIG=/dev/null
+	
         gsutil -m rsync -d -r $version gs://dg-docs/$PROJECT_NAME/$version
     else
 	echo "Skipping deploy docs: not on master branch"
