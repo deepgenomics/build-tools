@@ -151,6 +151,18 @@ function is_version_tag {
     fi
 }
 
+function is_master_or_version_tag {
+    if is_master_branch; then
+	return 0
+    fi
+
+    if is_version_tag; then
+	return 0
+    fi
+
+    return 1
+}
+
 function upload_conda_package {
     RECIPE_PATH=$1
     export PACKAGE_FILENAME=`conda build --output ${RECIPE_PATH}`
@@ -160,6 +172,27 @@ function upload_conda_package {
     elif is_master_branch; then
         # Upload with "dev" label
         anaconda --token ${ANACONDA_TOKEN} upload --force --user deepgenomics --private ${PACKAGE_FILENAME} --label dev
+    fi
+}
+	      
+function deploy_sphinx_docs {
+    PROJECT_NAME=$1
+    BUILD_PATH=$2
+    if is_master_or_version_tag; then
+        echo $GCLOUD_SERVICE_KEY | base64 --decode > $HOME/gcloud-service-key.json
+        source $HOME/google-cloud-sdk/path.bash.inc
+        gcloud auth activate-service-account --key-file $HOME/gcloud-service-key.json
+        gcloud config set project dg-platform
+        if is_version_tag; then
+            version=${CIRCLE_TAG}
+        else
+            version=master
+        fi
+        cd $BUILD_PATH
+        mv html $version
+        gsutil -m rsync -d -r $version gs://dg-docs/$PROJECT_NAME/$version
+    else
+	echo "Skipping deploy docs: not on master branch"
     fi
 }
 
