@@ -77,9 +77,9 @@ function configure_conda {
 
 function install_golang {
     if [ `uname` = "Darwin" ]; then
-	URL=https://dl.google.com/go/go1.11.1.darwin-amd64.tar.gz
+	URL=https://dl.google.com/go/go1.12.6.darwin-amd64.tar.gz
     else
-	URL=https://dl.google.com/go/go1.11.1.linux-amd64.tar.gz
+	URL=https://dl.google.com/go/go1.12.6.linux-amd64.tar.gz
     fi
     curl -L $URL | (cd $HOME; tar zxf -)
 
