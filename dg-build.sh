@@ -70,7 +70,7 @@ function configure_conda {
 	echo -n $ANACONDA_TOKEN > "$token_dir/https%3A%2F%2Fapi.anaconda.org.token"
 	chmod 0600 "$token_dir/https%3A%2F%2Fapi.anaconda.org.token"
     fi
-    
+
     # print some conda info (helpful for debugging)
     conda info -a
 }
@@ -98,6 +98,7 @@ function configure_gcloud {
     gcloud --quiet components update kubectl
     echo ${GCLOUD_SERVICE_KEY} | base64 --decode -i > ${HOME}/gcloud-service-key.json
     gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
+    echo "export GOOGLE_APPLICATION_CREDENTIALS=${HOME}/gcloud-service-key.json" >> $BASH_ENV
     gcloud config set project ${PROJECT_ID}
     gcloud --quiet config set container/cluster ${CLUSTER_NAME}
     gcloud config set compute/zone ${CLOUDSDK_COMPUTE_ZONE}
@@ -174,7 +175,7 @@ function upload_conda_package {
         anaconda --token ${ANACONDA_TOKEN} upload --force --user deepgenomics --private ${PACKAGE_FILENAME} --label dev
     fi
 }
-	      
+
 function deploy_sphinx_docs {
     PROJECT_NAME=$1
     BUILD_PATH=$2
@@ -193,7 +194,7 @@ function deploy_sphinx_docs {
 
 	# See: https://github.com/travis-ci/travis-ci/issues/7940
 	export BOTO_CONFIG=/dev/null
-	
+
         gsutil -m rsync -d -r $version gs://dg-docs/$PROJECT_NAME/$version
     else
 	echo "Skipping deploy docs: not on master branch"
