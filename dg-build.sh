@@ -77,13 +77,14 @@ function configure_conda {
 
 function install_golang {
     if [ `uname` = "Darwin" ]; then
-	URL=https://dl.google.com/go/go1.12.6.darwin-amd64.tar.gz
+	URL=https://dl.google.com/go/go1.13.darwin-amd64.tar.gz
     else
-	URL=https://dl.google.com/go/go1.12.6.linux-amd64.tar.gz
+	URL=https://dl.google.com/go/go1.13.linux-amd64.tar.gz
     fi
     curl -L $URL | (cd $HOME; tar zxf -)
 
     add_env_path "$HOME/go/bin"
+    add_env_var "GOPRIVATE" "github.com/deepgenomics"
 }
 
 function install_gcloud {
