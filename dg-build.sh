@@ -6,7 +6,7 @@ PROJECT_NAME=dg-platform
 PROJECT_ID=dg-platform
 CLUSTER_NAME=cluster-1
 CLOUDSDK_COMPUTE_ZONE=us-central1-c
-CLOUD_SDK_DOWNLOAD_LINK=https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-180.0.1-linux-x86_64.tar.gz
+CLOUD_SDK_DOWNLOAD_LINK=https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-261.0.0-linux-x86_64.tar.gz
 
 function add_env_command {
     echo "$*" >> $BASH_ENV
