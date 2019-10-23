@@ -37,7 +37,7 @@ function install_miniconda {
     bash /tmp/miniconda.sh -b -f -p $HOME/miniconda
 
     # source the script that makes the "conda" tool available
-    add_env_path "$HOME/miniconda/bin"
+    add_env_command "if ! command -v conda >/dev/null 2>&1 ; then . ${HOME}/miniconda/etc/profile.d/conda.sh ; fi"
 }
 
 function create_conda_environment {
