@@ -35,6 +35,8 @@ function download_miniconda {
 function install_miniconda {
     # install miniconda
     bash /tmp/miniconda.sh -b -f -p $HOME/miniconda
+
+    $HOME/miniconda/bin/conda init
 }
 
 function create_conda_environment {
