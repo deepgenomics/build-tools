@@ -25,9 +25,9 @@ function add_env_var {
 
 function download_miniconda {
     if [ `uname` = "Darwin" ]; then
-	URL=https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh
+	URL=https://repo.anaconda.com/miniconda/Miniconda2-latest-MacOSX-x86_64.sh
     else
-	URL=https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh
+	URL=https://repo.anaconda.com/miniconda/Miniconda2-latest-Linux-x86_64.sh
     fi
     curl $URL -o /tmp/miniconda.sh
 }
